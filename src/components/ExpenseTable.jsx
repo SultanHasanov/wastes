@@ -63,7 +63,7 @@ export const ExpenseTable = React.memo(({expenses, onUpdateExpense, onDeleteExpe
       render: (date) => formatDate(date),
     },
     {
-      title: "Действия",
+      title: "🧑‍💻",
       key: "actions",
       render: (_, record) => (
         <div className="icons">
@@ -78,10 +78,11 @@ export const ExpenseTable = React.memo(({expenses, onUpdateExpense, onDeleteExpe
   ];
 
   const paginationConfig = {
-    pageSize: 10, // Количество элементов на странице
+    pageSize: 7, // Количество элементов на странице
     total: expenses.length, // Общее количество элементов
     showSizeChanger: true, // Показывает опцию выбора количества элементов на странице
     pageSizeOptions: ['5', '10', '20'], // Опции для выбора размера страницы
+    position: ['bottomLeft'],
     onChange: (page, pageSize) => {
       console.log(`Страница: ${page}, Размер страницы: ${pageSize}`);
     },
@@ -90,7 +91,7 @@ export const ExpenseTable = React.memo(({expenses, onUpdateExpense, onDeleteExpe
   return (
     <>
       <Text keyboard>Сумма за период: {total}</Text>
-      <Table  pagination={paginationConfig}  responsive dataSource={expenses} columns={columns} rowKey="id" />
+      <Table pagination={paginationConfig}  responsive dataSource={expenses} columns={columns} rowKey="id" />
       <Modal
         title="Редактировать расход"
         open={isModalVisible}
