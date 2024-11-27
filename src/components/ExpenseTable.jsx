@@ -87,7 +87,7 @@ export const ExpenseTable = React.memo(({expenses, onUpdateExpense, onDeleteExpe
   };
 
   const paginationConfig = {
-    pageSize: 7, // Количество элементов на странице
+    pageSize: 12, // Количество элементов на странице
     total: expenses.length, // Общее количество элементов
     showSizeChanger: true, // Показывает опцию выбора количества элементов на странице
     pageSizeOptions: ['5', '10', '20'], // Опции для выбора размера страницы
@@ -97,12 +97,9 @@ export const ExpenseTable = React.memo(({expenses, onUpdateExpense, onDeleteExpe
     <>
       <Table pagination={paginationConfig}  responsive dataSource={expenses} columns={columns} rowKey="id" />
       <Text  style={{ 
-        color: 'green',
-        fontSize: '20px',
-        position: 'relative', 
-        top: '-49px',  // Устанавливает отступ сверху (поднимет элемент)
-        left: '0px'   // Можно также настроить отступ слева
-  }} keyboard>Сумма за период: {formatAmount(total)}</Text>
+        fontSize: '20px'
+
+  }} keyboard>Сумма за период: <strong style={{color: 'green'}}>{formatAmount(total)}</strong></Text>
       <Modal
         title="Редактировать расход"
         open={isModalVisible}
