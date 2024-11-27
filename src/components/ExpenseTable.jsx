@@ -87,7 +87,7 @@ export const ExpenseTable = React.memo(({expenses, onUpdateExpense, onDeleteExpe
   };
 
   const paginationConfig = {
-    pageSize: 12, // Количество элементов на странице
+    pageSize: 10, // Количество элементов на странице
     total: expenses.length, // Общее количество элементов
     showSizeChanger: true, // Показывает опцию выбора количества элементов на странице
     pageSizeOptions: ['5', '10', '20'], // Опции для выбора размера страницы
