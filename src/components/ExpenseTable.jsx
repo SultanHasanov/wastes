@@ -43,8 +43,6 @@ export const ExpenseTable = React.memo(({expenses, onUpdateExpense, onDeleteExpe
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
     }).format(new Date(isoString));
   };
 
@@ -69,7 +67,7 @@ export const ExpenseTable = React.memo(({expenses, onUpdateExpense, onDeleteExpe
         <div className="icons">
           <EditTwoTone onClick={() => showEditModal(record)} />
           <DeleteOutlined
-            onClick={() => onDeleteExpense(record.id)}
+            onClick={() => handleDeleteExpense(record.id)}
             style={{ color: "red", marginLeft: "15px" }}
           />
         </div>
@@ -77,21 +75,34 @@ export const ExpenseTable = React.memo(({expenses, onUpdateExpense, onDeleteExpe
     },
   ];
 
+  const handleDeleteExpense = (id) => {
+    Modal.confirm({
+      title: 'Вы уверены, что хотите удалить этот расход?',
+      content: 'Это действие необратимо!',
+      okText: 'Да',
+      okType: 'danger',
+      cancelText: 'Отмена',
+      onOk: () => onDeleteExpense(id),
+    });
+  };
+
   const paginationConfig = {
     pageSize: 7, // Количество элементов на странице
     total: expenses.length, // Общее количество элементов
     showSizeChanger: true, // Показывает опцию выбора количества элементов на странице
     pageSizeOptions: ['5', '10', '20'], // Опции для выбора размера страницы
-    position: ['bottomLeft'],
-    onChange: (page, pageSize) => {
-      console.log(`Страница: ${page}, Размер страницы: ${pageSize}`);
-    },
   };
 
   return (
     <>
-      <Text keyboard>Сумма за период: {total}</Text>
       <Table pagination={paginationConfig}  responsive dataSource={expenses} columns={columns} rowKey="id" />
+      <Text  style={{ 
+        color: 'green',
+        fontSize: '20px',
+        position: 'relative', 
+        top: '-49px',  // Устанавливает отступ сверху (поднимет элемент)
+        left: '0px'   // Можно также настроить отступ слева
+  }} keyboard>Сумма за период: {formatAmount(total)}</Text>
       <Modal
         title="Редактировать расход"
         open={isModalVisible}
