@@ -1,7 +1,7 @@
 import React, {useState, useMemo } from "react";
 import { Table, Modal, Typography } from "antd";
 import { ExpenseForm } from "./ExpenseForm";
-import { DeleteOutlined, EditTwoTone } from "@ant-design/icons";
+import { DeleteOutlined, EditTwoTone, SettingOutlined } from "@ant-design/icons";
 import '../App.css';
 
 export const ExpenseTable = React.memo(({expenses, onUpdateExpense, onDeleteExpense }) => {
@@ -47,7 +47,7 @@ export const ExpenseTable = React.memo(({expenses, onUpdateExpense, onDeleteExpe
   };
 
   const columns = [
-    { title: "Комментарий", dataIndex: "comment", key: "comment" },
+    { title: "Траты", dataIndex: "comment", key: "comment" },
     {
       title: "Сумма",
       dataIndex: "amount",
@@ -61,14 +61,14 @@ export const ExpenseTable = React.memo(({expenses, onUpdateExpense, onDeleteExpe
       render: (date) => formatDate(date),
     },
     {
-      title: "🧑‍💻",
+      title: <SettingOutlined style={{fontSize: '18px'}} />,
       key: "actions",
       render: (_, record) => (
         <div className="icons">
-          <EditTwoTone onClick={() => showEditModal(record)} />
-          <DeleteOutlined
+          <EditTwoTone style={{fontSize: '20px'}} onClick={() => showEditModal(record)} />
+          <DeleteOutlined 
             onClick={() => handleDeleteExpense(record.id)}
-            style={{ color: "red", marginLeft: "15px" }}
+            style={{ color: "red", fontSize: '20px', marginLeft: "15px" }}
           />
         </div>
       ),

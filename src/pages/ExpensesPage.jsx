@@ -52,7 +52,7 @@ export const ExpensesPage = () => {
 
   return (
     <div>
-      <h1>Расходы</h1>
+      <h1 style={{margin: '0px', marginBottom: '20px'}}>Расходы</h1>
       <Filter setFilter={setFilter} />
       <ExpenseForm onAddExpense={handleAddExpense} />
       <Chart expenses={filteredExpenses} />
