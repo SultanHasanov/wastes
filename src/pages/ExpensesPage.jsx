@@ -4,8 +4,9 @@ import { ExpenseForm } from "../components/ExpenseForm";
 import { Filter } from "../components/Filter";
 import { Chart } from "../components/Chart";
 import { fetchExpenses, addExpense, updateExpense, deleteExpense } from "../services/api";
+import { Button } from "antd";
 
-export const ExpensesPage = () => {
+export const ExpensesPage = ({ onLogout }) => {
   const [expenses, setExpenses] = useState([]);
   const [filteredExpenses, setFilteredExpenses] = useState([]);
   const [filter, setFilter] = useState("all");
@@ -23,7 +24,6 @@ export const ExpensesPage = () => {
   }, []);
 
   useEffect(() => {
-    // Применение фильтра
     const now = new Date();
     const filtered = expenses.filter((expense) => {
       const expenseDate = new Date(expense.date);
@@ -52,7 +52,8 @@ export const ExpensesPage = () => {
 
   return (
     <div>
-      <h1 style={{margin: '0px', marginBottom: '20px'}}>Расходы</h1>
+      <Button onClick={onLogout}>Выход</Button>
+      <h1 style={{ margin: "0px", marginBottom: "20px" }}>Расходы</h1>
       <Filter setFilter={setFilter} />
       <ExpenseForm onAddExpense={handleAddExpense} />
       <Chart expenses={filteredExpenses} />
