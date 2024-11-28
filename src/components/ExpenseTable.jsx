@@ -10,6 +10,11 @@ export const ExpenseTable = React.memo(({expenses, onUpdateExpense, onDeleteExpe
 
   const { Text } = Typography;
 
+  const sortedExpenses = useMemo(() => {
+    return [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [expenses]);
+  
+
   const total = useMemo(() => {
     return expenses.reduce((acc, el) => acc + Number(el.amount), 0);
   }, [expenses]);
@@ -95,11 +100,11 @@ export const ExpenseTable = React.memo(({expenses, onUpdateExpense, onDeleteExpe
 
   return (
     <>
-      <Table pagination={paginationConfig}  responsive dataSource={expenses} columns={columns} rowKey="id" />
+      <Table pagination={paginationConfig}  responsive dataSource={sortedExpenses} columns={columns} rowKey="id" />
       <Text  style={{ 
         fontSize: '20px'
 
-  }} keyboard>Сумма за период: <strong style={{color: 'green'}}>{formatAmount(total)}</strong></Text>
+  }} keyboard>Сумма за период: <b style={{color: 'green'}}>{formatAmount(total)}</b></Text>
       <Modal
         title="Редактировать расход"
         open={isModalVisible}
