@@ -1,139 +1,135 @@
 import React, { useState, useMemo } from "react";
 import { Table, Modal, Typography } from "antd";
 import { ExpenseForm } from "./ExpenseForm";
-import {
-  DeleteOutlined,
-  EditTwoTone,
-  SettingOutlined,
-} from "@ant-design/icons";
-import "../App.css";
+import { DeleteOutlined, EditTwoTone, SettingOutlined } from "@ant-design/icons";
+import '../App.css';
 
-export const ExpenseTable = React.memo(
-  ({ expenses, onUpdateExpense, onDeleteExpense }) => {
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [editingExpense, setEditingExpense] = useState(null);
+export const ExpenseTable = React.memo(({ expenses, filter, onUpdateExpense, onDeleteExpense }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editingExpense, setEditingExpense] = useState(null);
 
-    const { Text } = Typography;
+  const { Text } = Typography;
 
-    // Сортировка расходов по дате
-    const sortedExpenses = useMemo(() => {
-      return [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
-    }, [expenses]);
+  // Фильтрация расходов по выбранной дате или диапазону дат
+  const filteredExpenses = useMemo(() => {
+    if (!filter.startDate) {
+      return expenses;
+    }
 
-    // Подсчет общей суммы расходов
-    const total = useMemo(() => {
-      return expenses.reduce((acc, el) => acc + Number(el.amount), 0);
-    }, [expenses]);
+    const startDate = new Date(filter.startDate);
+    const endDate = filter.endDate ? new Date(filter.endDate) : startDate;
 
-    const showEditModal = (expense) => {
-      setEditingExpense(expense);
-      setIsModalVisible(true);
-    };
+    return expenses.filter((expense) => {
+      const expenseDate = new Date(expense.date);
+      // Проверяем, попадает ли дата расхода в выбранный диапазон
+      return expenseDate >= startDate && expenseDate <= endDate;
+    });
+  }, [expenses, filter]);
 
-    const handleUpdate = (updatedExpense) => {
-      onUpdateExpense(editingExpense.id, updatedExpense);
-      setIsModalVisible(false);
-      setEditingExpense(null);
-    };
+  // Сортировка расходов по дате
+  const sortedExpenses = useMemo(() => {
+    return [...filteredExpenses].sort((a, b) => new Date(b.date) - new Date(a.date));
+  }, [filteredExpenses]);
 
-    const handleCancel = () => {
-      setIsModalVisible(false);
-      setEditingExpense(null);
-    };
+  // Подсчет общей суммы расходов
+  const total = useMemo(() => {
+    return sortedExpenses.reduce((acc, el) => acc + Number(el.amount), 0);
+  }, [sortedExpenses]);
 
-    const formatAmount = (amount) => {
-      return new Intl.NumberFormat("ru-RU", {
-        style: "currency",
-        currency: "RUB",
-        maximumFractionDigits: 0,
-      }).format(amount);
-    };
+  const showEditModal = (expense) => {
+    setEditingExpense(expense);
+    setIsModalVisible(true);
+  };
 
-    const formatDate = (isoString) => {
-      return new Intl.DateTimeFormat("ru-RU", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }).format(new Date(isoString));
-    };
+  const handleUpdate = (updatedExpense) => {
+    onUpdateExpense(editingExpense.id, updatedExpense);
+    setIsModalVisible(false);
+    setEditingExpense(null);
+  };
 
-    const columns = [
-      { title: "Траты", dataIndex: "comment", key: "comment" },
-      {
-        title: "Сумма",
-        dataIndex: "amount",
-        key: "amount",
-        render: (amount) => formatAmount(amount),
-      },
-      {
-        title: "Дата",
-        dataIndex: "date",
-        key: "date",
-        render: (date) => formatDate(date),
-      },
-      {
-        title: <SettingOutlined style={{ fontSize: "18px" }} />,
-        key: "actions",
-        render: (_, record) => (
-          <div className="icons">
-            <EditTwoTone
-              style={{ fontSize: "20px" }}
-              onClick={() => showEditModal(record)}
-            />
-            <DeleteOutlined
-              onClick={() => handleDeleteExpense(record.id)}
-              style={{
-                color: "red",
-                fontSize: "20px",
-                marginLeft: "15px",
-              }}
-            />
-          </div>
-        ),
-      },
-    ];
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setEditingExpense(null);
+  };
 
-    const handleDeleteExpense = (id) => {
-      Modal.confirm({
-        title: "Вы уверены, что хотите удалить этот расход?",
-        content: "Это действие необратимо!",
-        okText: "Да",
-        okType: "danger",
-        cancelText: "Отмена",
-        onOk: () => onDeleteExpense(id),
-      });
-    };
+  const formatAmount = (amount) => {
+    return new Intl.NumberFormat("ru-RU", {
+      style: "currency",
+      currency: "RUB",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
 
-    const paginationConfig = {
-      pageSize: 10, // Количество элементов на странице
-      total: expenses.length, // Общее количество элементов
-      showSizeChanger: true, // Показывает опцию выбора количества элементов на странице
-      pageSizeOptions: ["5", "10", "20"], // Опции для выбора размера страницы
-    };
+  const formatDate = (isoString) => {
+    return new Intl.DateTimeFormat("ru-RU", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(new Date(isoString));
+  };
 
-    return (
-      <>
-        <Table
-          pagination={paginationConfig}
-          responsive
-          dataSource={sortedExpenses}
-          columns={columns}
-          rowKey="id"
-        />
-        <div className="summary">
-          <Text strong style={{ fontSize: "18px" }}>
-            Общая сумма расходов: {formatAmount(total)}
-          </Text>
+  const columns = [
+    { title: "Траты", dataIndex: "comment", key: "comment" },
+    {
+      title: "Сумма",
+      dataIndex: "amount",
+      key: "amount",
+      render: (amount) => formatAmount(amount),
+    },
+    {
+      title: "Дата",
+      dataIndex: "date",
+      key: "date",
+      render: (date) => formatDate(date),
+    },
+    {
+      title: <SettingOutlined style={{ fontSize: '18px' }} />,
+      key: "actions",
+      render: (_, record) => (
+        <div className="icons">
+          <EditTwoTone style={{ fontSize: '20px' }} onClick={() => showEditModal(record)} />
+          <DeleteOutlined
+            onClick={() => handleDeleteExpense(record.id)}
+            style={{ color: "red", fontSize: '20px', marginLeft: "15px" }}
+          />
         </div>
-        <Modal
-          title="Редактировать расход"
-          visible={isModalVisible}
-          onCancel={handleCancel}
-          footer={null}
-        >
-          <ExpenseForm initialValues={editingExpense} onSubmit={handleUpdate} />
-        </Modal>
-      </>
-    );
-  }
-);
+      ),
+    },
+  ];
+
+  const handleDeleteExpense = (id) => {
+    Modal.confirm({
+      title: 'Вы уверены, что хотите удалить этот расход?',
+      content: 'Это действие необратимо!',
+      okText: 'Да',
+      okType: 'danger',
+      cancelText: 'Отмена',
+      onOk: () => onDeleteExpense(id),
+    });
+  };
+
+  const paginationConfig = {
+    pageSize: 10, // Количество элементов на странице
+    total: sortedExpenses.length, // Общее количество элементов
+    showSizeChanger: true, // Показывает опцию выбора количества элементов на странице
+    pageSizeOptions: ['5', '10', '20'], // Опции для выбора размера страницы
+  };
+
+  return (
+    <>
+      <Table pagination={paginationConfig} responsive dataSource={sortedExpenses} columns={columns} rowKey="id" />
+      <Text style={{ fontSize: '20px' }} keyboard>Сумма за период: <b style={{ color: 'green' }}>{formatAmount(total)}</b></Text>
+      <Modal
+        title="Редактировать расход"
+        open={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <ExpenseForm
+          onAddExpense={handleUpdate}
+          initialValues={editingExpense}
+        />
+      </Modal>
+    </>
+  );
+});
