@@ -17,8 +17,7 @@ export const Chart = ({ expenses }) => {
   const formatDate = (date) =>
     new Intl.DateTimeFormat("ru-RU", {
       day: "2-digit",
-      month: "long",
-      year: "numeric",
+      month: "numeric",
     }).format(new Date(date));
 
   // Группировка расходов по дате
@@ -29,13 +28,19 @@ export const Chart = ({ expenses }) => {
     return acc;
   }, {});
 
+
+  const sortedData =  Object.fromEntries(
+    Object.entries(groupedByDate).sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
+  );
+  
+
   // Данные для диаграммы
   const data = {
-    labels: Object.keys(groupedByDate),
+    labels: Object.keys(sortedData),
     datasets: [
       {
         label: "Расходы", // Название набора данных
-        data: Object.values(groupedByDate),
+        data: Object.values(sortedData),
         backgroundColor: "rgba(75,192,192,1.4)", // Цвет столбцов
       },
     ],

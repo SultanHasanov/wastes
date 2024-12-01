@@ -1,7 +1,8 @@
 import React from "react";
 import { Input, Button, Form } from "antd";
+import '../App.css'
 
-export const ExpenseForm = ({ onAddExpense, initialValues }) => {
+export const ExpenseForm = ({ onAddExpense, initialValues, showCalendar }) => {
   const [form] = Form.useForm();
 
   React.useEffect(() => {
@@ -11,23 +12,39 @@ export const ExpenseForm = ({ onAddExpense, initialValues }) => {
   }, [initialValues, form]);
 
   const handleFinish = (values) => {
-    onAddExpense({ ...values, date: initialValues?.date || new Date().toISOString() });
+    onAddExpense({
+      ...values,
+      date: initialValues?.date || new Date().toISOString(),
+    });
     form.resetFields();
   };
 
+ 
+
   return (
-    <Form form={form} onFinish={handleFinish} layout="inline">
-      <Form.Item name="comment" rules={[{ required: true, message: "Введите комментарий" }]}>
-        <Input placeholder="Комментарий" />
-      </Form.Item>
-      <Form.Item name="amount" rules={[{ required: true, message: "Введите сумму" }]}>
-        <Input type="number" placeholder="Сумма" />
-      </Form.Item>
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Сохранить
-        </Button>
-      </Form.Item>
-    </Form>
+    <div
+    className={`table-container`}
+    style={{ marginTop: showCalendar ? "320px" : "0" }}
+  >
+      <Form form={form} onFinish={handleFinish} layout="inline">
+        <Form.Item
+          name="comment"
+          rules={[{ required: true, message: "Введите комментарий" }]}
+        >
+          <Input placeholder="Комментарий" />
+        </Form.Item>
+        <Form.Item
+          name="amount"
+          rules={[{ required: true, message: "Введите сумму" }]}
+        >
+          <Input type="number" placeholder="Сумма" />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Сохранить
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
   );
 };

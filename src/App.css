@@ -6,3 +6,6 @@
   padding: 0px 5px;
 }
 
+.table-container {
+  transition: margin-top 1s ease; /* Плавное изменение margin-top */
+}

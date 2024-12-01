@@ -8,32 +8,20 @@ import { Button } from "antd";
 
 export const ExpensesPage = ({ onLogout }) => {
   const [expenses, setExpenses] = useState([]);
-  const [filteredExpenses, setFilteredExpenses] = useState([]);
   const [filter, setFilter] = useState("all");
+  const [showCalendar, setShowCalendar] = useState(false); // Состояние для управления показом календаря
 
   useEffect(() => {
     const loadExpenses = async () => {
       try {
         const data = await fetchExpenses();
-        setExpenses(data);
+        setExpenses(data); // Загружаем все расходы
       } catch (error) {
         console.error("Ошибка загрузки расходов:", error);
       }
     };
     loadExpenses();
   }, []);
-
-  useEffect(() => {
-    const now = new Date();
-    const filtered = expenses.filter((expense) => {
-      const expenseDate = new Date(expense.date);
-      if (filter === "today") return expenseDate.toDateString() === now.toDateString();
-      if (filter === "week") return now - expenseDate <= 7 * 24 * 60 * 60 * 1000;
-      if (filter === "month") return now.getMonth() === expenseDate.getMonth();
-      return true;
-    });
-    setFilteredExpenses(filtered);
-  }, [filter, expenses]);
 
   const handleAddExpense = async (newExpense) => {
     const addedExpense = await addExpense(newExpense);
@@ -54,13 +42,16 @@ export const ExpensesPage = ({ onLogout }) => {
     <div>
       <Button onClick={onLogout}>Выход</Button>
       <h1 style={{ margin: "0px", marginBottom: "20px" }}>Расходы</h1>
-      <Filter setFilter={setFilter} />
-      <ExpenseForm onAddExpense={handleAddExpense} />
-      <Chart expenses={filteredExpenses} />
+      {/* Передаем состояние showCalendar в фильтр */}
+      <Filter setFilter={setFilter} setShowCalendar={setShowCalendar}/>
+      <ExpenseForm showCalendar={showCalendar} onAddExpense={handleAddExpense} />
+      <Chart expenses={expenses} />
       <ExpenseTable
-        expenses={filteredExpenses}
+        expenses={expenses}
+        filter={filter} // Передаем фильтр в компонент таблицы
         onUpdateExpense={handleUpdateExpense}
         onDeleteExpense={handleDeleteExpense}
+       
       />
     </div>
   );
