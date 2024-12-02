@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Table, Modal, Typography } from "antd";
+import { Table, Modal } from "antd";
 import { ExpenseForm } from "./ExpenseForm";
 import { DeleteOutlined, EditTwoTone, SettingOutlined } from "@ant-design/icons";
 import '../App.css';
@@ -8,7 +8,7 @@ export const ExpenseTable = React.memo(({ expenses, filter, onUpdateExpense, onD
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingExpense, setEditingExpense] = useState(null);
 
-  const { Text } = Typography;
+  // const { Text } = Typography;
 
   // Фильтрация расходов по выбранной дате или диапазону дат
   const filteredExpenses = useMemo(() => {
@@ -32,9 +32,9 @@ export const ExpenseTable = React.memo(({ expenses, filter, onUpdateExpense, onD
   }, [filteredExpenses]);
 
   // Подсчет общей суммы расходов
-  const total = useMemo(() => {
-    return sortedExpenses.reduce((acc, el) => acc + Number(el.amount), 0);
-  }, [sortedExpenses]);
+  // const total = useMemo(() => {
+  //   return sortedExpenses.reduce((acc, el) => acc + Number(el.amount), 0);
+  // }, [sortedExpenses]);
 
   const showEditModal = (expense) => {
     setEditingExpense(expense);
@@ -117,8 +117,8 @@ export const ExpenseTable = React.memo(({ expenses, filter, onUpdateExpense, onD
 
   return (
     <>
+    
       <Table pagination={paginationConfig} responsive dataSource={sortedExpenses} columns={columns} rowKey="id" />
-      <Text style={{ fontSize: '20px' }} keyboard>Сумма за период: <b style={{ color: 'green' }}>{formatAmount(total)}</b></Text>
       <Modal
         title="Редактировать расход"
         open={isModalVisible}
